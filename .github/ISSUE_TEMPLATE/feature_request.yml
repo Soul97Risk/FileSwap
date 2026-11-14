@@ -1,0 +1,55 @@
+name: 功能建议
+description: 想要一个现在做不到的能力
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提之前先想一个问题：**这件事用现有的三条通道（Root / Shizuku / 本地）加上一个脚本能不能做到？**
+        如果能，那它更可能是一份文档而不是一个功能。
+
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 你实际要解决的场景
+      description: 讲场景，不要直接讲实现。比如「我要在五个设备的同一个目录下批量换同一个文件」
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: 现在怎么绕过这件事
+      description: 现有版本的哪一步卡住了，或者你用什么外部工具补上了
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 你希望的形态
+      description: 界面上怎么触发、状态怎么表达、失败时告诉用户什么
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: 影响范围
+      options:
+        - 只涉及界面与交互
+        - 涉及文件操作通道（可能要改 AIDL）
+        - 涉及新增执行引擎
+        - 不确定
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认
+      options:
+        - label: 这个功能不依赖联网，也不需要内置任何第三方文件
+          required: true
+        - label: 我接受「不合并」的可能，并愿意听理由
+          required: true

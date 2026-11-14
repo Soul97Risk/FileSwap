@@ -175,15 +175,106 @@ app/src/main/
 
 ---
 
-## 许可
-
-[Apache License 2.0](LICENSE) · Copyright 2026 kndnb666
-
 ## 致谢
 
-- [Shizuku](https://github.com/RikkaApps/Shizuku)（Apache-2.0）—— `shell` 权限的统一入口
-- [libsu](https://github.com/topjohnwu/libsu)（Apache-2.0）—— su 会话与 RootService
-- [Jetpack Compose](https://developer.android.com/jetpack/compose) / [Material 3](https://m3.material.io/)（Apache-2.0）
+这个项目没有自己的 `shell`、没有自己的 su 实现、也没有自己的设计语言。它站在三个方向上。
+
+### 一、代码依赖（直接）
+
+| 项目 | 版本 | 许可 | 在 FileSwap 里承担什么 |
+|---|---|---|---|
+| [Shizuku API](https://github.com/RikkaApps/Shizuku-API) · RikkaW | 13.1.5 | **MIT** | `shell` 权限入口：运行时授权、UserService 绑定、服务端进程执行 |
+| [libsu](https://github.com/topjohnwu/libsu) · topjohnwu | 6.0.0 | Apache-2.0 | su 会话探测与 `RootService`（root 进程中的文件服务） |
+| [Jetpack Compose](https://developer.android.com/jetpack/compose) | BOM 2026.05.01 | Apache-2.0 | 全部界面 |
+| [Material 3](https://m3.material.io/) | 1.5.0-alpha22 | Apache-2.0 | 组件、形状档位、动效、`LoadingIndicator` |
+| [Material Icons Extended](https://fonts.google.com/icons) | 1.7.8 | Apache-2.0 | 界面图标 |
+| [AndroidX Core / Activity / Lifecycle](https://developer.android.com/jetpack/androidx) | — | Apache-2.0 | `ComponentActivity`、`enableEdgeToEdge`、`AndroidViewModel` |
+| [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines) · JetBrains | 1.11.0 | Apache-2.0 | 绑定、IO、状态流 |
+| [Kotlin Standard Library](https://kotlinlang.org/) · JetBrains | 2.4.0 | Apache-2.0 | 语言运行时 |
+
+版本取自 `./gradlew :app:dependencies --configuration releaseRuntimeClasspath` 的实际解析结果。
+112 个模块（含传递依赖）的完整清单与逐个许可核对见 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。
+
+> 构建期工具（Gradle、AGP、Kotlin 编译器、R8）不进入 APK，其许可与署名见各自仓库，此处不列。
+
+### 二、运行时依赖（不打包，但决定这个项目能不能用）
+
+- **[Shizuku](https://github.com/RikkaApps/Shizuku)** —— 项目目录一度叫 `ShizukuFileTool`。没有它，
+  「免 Root 但仍能写 `Android/data`」这条路根本不存在。
+  注意区分：Shizuku **API 库**是 MIT，Shizuku **管理器应用**是 Apache-2.0，两者不是同一份许可。
+- **[Magisk](https://github.com/topjohnwu/Magisk)** / **[KernelSU](https://github.com/tiann/KernelSU)** / **[APatch](https://github.com/bmax121/APatch)** ——
+  Root 引擎的 su 提供方。三者对 `su -M` 的支持不一致，`RootManager` 里「su 不支持该参数时自动回退普通 su」就是为它们写的。
+- **Android `ExternalStorageProvider`** —— SAF 通道的对手方。`SafOps` 里「`query` 会丢弃 `selection` 参数」
+  「覆盖既存文档要走先删后建」这两条结论，全部来自对着它的实测。
+
+### 三、规范与文档
+
+- **[Material 3 Expressive](https://m3.material.io/)** —— 吸底操作栏、连接按钮组、形状档位、多边形形变加载器的依据。
+- **Android API 文档**中关于 `MANAGE_EXTERNAL_STORAGE` 排除项的说明 —— 「所有文件访问也管不到别人 `Android/data`」
+  这条边界直接决定了功能设计，而不是实现细节。
+- **Shizuku 上游 issue #1278 / #1171** —— 13.6.0 的 `Android/data` 可见性回归与 UserService 启动崩溃，
+  是 `appVersionName()` 这个方法存在的原因。
+
+### 四、踩过的坑
+
+`ShizukuManager` / `RootManager` 里那些 90 秒超时、共享 `CompletableDeferred`、`Shell.Builder.create().build()`
+重建缓存的注释，每一条背后都是一台真机上的失败。没有那些机型，这个项目会一直停在「我这里能跑」。
+
+---
+
+## 开源规范
+
+### 许可
+
+**Apache License 2.0**。三份文件分工不同，缺一不可：
+
+| 文件 | 作用 |
+|---|---|
+| [LICENSE](LICENSE) | 许可全文。法律文本，不要改 |
+| [NOTICE](NOTICE) | 项目级署名 |
+| [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | 第三方组件清单 + MIT 许可全文 |
+
+### 使用这份代码，需要做什么
+
+| 你想做的事 | 你需要做的 |
+|---|---|
+| 读代码、自己改着用、不分发 | 无强制义务。保留 `LICENSE` 是最低礼貌 |
+| fork 后改，自己编译自己用 | 同上 |
+| 分发**修改后的源码** | ① 附上 `LICENSE` 全文（§4a）② 保留原有版权 / 专利 / 商标 / 署名声明（§4c）③ 在改过的文件里加显著说明（§4b）④ 附上 `NOTICE`（§4d） |
+| 发布基于它的 **APK** | 与上一行完全相同。APK 属于 Object form，同样受 §4 约束。在「关于」页放许可与署名即可满足 |
+| 商用、放进自己的产品 | 允许，不收费，**也不需要公开你的代码** —— Apache-2.0 不是 copyleft |
+| 二次闭源分发 | 允许，但 §4 的署名与声明义务照旧 |
+| 把它改名成 FileSwap 再发布 | 不行。§6 只授予「为说明来源而合理使用名称」的权利，不含商标 |
+| 要求本项目把你的修改也开源 | 不能。除非你另外同意，否则你的改动可以完全私有 |
+
+### 两处最容易漏掉的上游义务
+
+1. **Shizuku API 是 MIT，不是 Apache-2.0。** MIT 要求「在所有副本中附上版权声明与本许可声明」。
+   本项目已把 `Copyright (c) 2021 RikkaW` 与 MIT 全文放进 `THIRD-PARTY-NOTICES.md`——
+   **你再分发时不要删掉**。删掉就是违约，与你删的是 Markdown 还是 APK 里的文件无关。
+2. **libsu 是 Apache-2.0，但上游仓库没有 `NOTICE` 文件**，因此 §4(d) 不额外要求你附带什么；
+   保留 `LICENSE` 与代码里的版权头即可。
+
+### 参与贡献
+
+见 [CONTRIBUTING.md](CONTRIBUTING.md)。摘要四条：
+
+- 提交前 `./gradlew :app:assembleDebug` 必须通过
+- Kotlin 官方代码风格，不引入新的格式化工具链
+- 改 AIDL 必须递增 `UserService` 的 `version`，否则 Shizuku 会继续复用旧进程，新方法直接 `NoSuchMethod`
+- 不提交 `local.properties`、签名材料、任何密钥
+
+按 Apache-2.0 §5，你提交的贡献默认以同一许可授权（inbound = outbound），无需另签协议。
+
+### 安全
+
+漏洞报告走 [SECURITY.md](SECURITY.md) 里的渠道，不要开公开 issue 贴可利用细节。
+
+### 本项目不做什么
+
+- 不内置、不提供任何游戏或应用的文件与下载源
+- 不绕过签名校验，不伪造服务端响应。它只负责把文件写到你有权限写的位置，剩下的事它不管
+- 不联网：`AndroidManifest.xml` 里没有 `INTERNET` 权限，可以自己 grep 确认
 
 ---
 

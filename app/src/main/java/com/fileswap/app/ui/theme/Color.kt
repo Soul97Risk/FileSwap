@@ -1,3 +1,8 @@
+/*
+ * Copyright 2026 kndnb666
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.fileswap.app.ui.theme
 
 import androidx.compose.material3.darkColorScheme

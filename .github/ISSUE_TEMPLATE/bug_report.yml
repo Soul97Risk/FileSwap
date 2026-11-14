@@ -1,0 +1,105 @@
+name: 缺陷报告
+description: 运行结果与预期不符
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先确认两件事：
+
+        1. README 的「已知限制」里有没有已经写明的边界（尤其是 `Android/data` 与「所有文件访问」的排除项）
+        2. `./gradlew :app:assembleDebug` 在你自己的机器上是否通过
+
+        如果这是一个**能被利用**的安全问题，请走 [SECURITY.md](../blob/main/SECURITY.md) 里的私密渠道，不要贴在这里。
+
+  - type: input
+    id: version
+    attributes:
+      label: 应用版本
+      description: 设置页可见，形如 `1.5 (versionCode 6)`
+      placeholder: 1.5 (versionCode 6)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: engine
+    attributes:
+      label: 执行引擎
+      options:
+        - 自动
+        - Root
+        - Shizuku
+        - 本地存储
+        - 不确定
+    validations:
+      required: true
+
+  - type: dropdown
+    id: shizuku-launch
+    attributes:
+      label: Shizuku 的启动方式
+      description: 状态卡副标题会显示 `root` 或 `shell(ADB)`。没用 Shizuku 就选「未使用」
+      options:
+        - 未使用 Shizuku
+        - root 启动
+        - ADB / 无线调试启动（shell）
+        - 不知道
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: 机型 / ROM / Android 版本
+      description: ROM 是定制系统时必须写清楚，很多问题只在特定 ROM 上出现
+      placeholder: vivo X60 / OriginOS / Android 11
+    validations:
+      required: true
+
+  - type: input
+    id: shizuku-version
+    attributes:
+      label: Shizuku 版本
+      description: 设置里的发行版本名，形如 `13.6.0.r1086`。13.6.0 有已知问题
+      placeholder: 13.6.0.r1086
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 引擎选 Shizuku（ADB 启动）
+        2. 导入 xxx.unity3d
+        3. 目标路径填 /storage/emulated/0/Android/data/...
+        4. 点替换
+        5. 日志显示 ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果与实际结果
+    validations:
+      required: true
+
+  - type: textarea
+    id: log
+    attributes:
+      label: 日志
+      description: 应用内导出日志后粘贴。日志里带执行身份 `uid` 与失败原因，是定位的关键
+      render: text
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认
+      options:
+        - label: 我在最新版上复现过这个问题
+          required: true
+        - label: 日志里没有包含我个人隐私的路径或文件名（或已自行打码）
+          required: true

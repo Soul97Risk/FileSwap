@@ -1,0 +1,28 @@
+FileSwap
+Copyright 2026 kndnb666
+
+This product includes software developed by third parties.
+The full component list and the complete license texts are in
+THIRD-PARTY-NOTICES.md.
+
+  Shizuku-API
+  Copyright (c) 2021 RikkaW
+  Licensed under the MIT License
+  https://github.com/RikkaApps/Shizuku-API
+
+  libsu (topjohnwu)
+  Licensed under the Apache License, Version 2.0
+  https://github.com/topjohnwu/libsu
+
+  AndroidX, Jetpack Compose, Material 3
+  Copyright The Android Open Source Project
+  Licensed under the Apache License, Version 2.0
+  https://developer.android.com/jetpack/androidx
+
+  Kotlin Standard Library, Kotlin Coroutines
+  Copyright JetBrains s.r.o. and Kotlin contributors
+  Licensed under the Apache License, Version 2.0
+  https://kotlinlang.org
+
+FileSwap itself is licensed under the Apache License, Version 2.0.
+See LICENSE for the full text.
