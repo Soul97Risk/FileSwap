@@ -1,0 +1,70 @@
+# ─── Gradle / AGP ────────────────────────────────────────────────────────
+.gradle/
+build/
+.gradle-cache/
+kotlin-js-store/
+# wrapper 的 jar 必须入库，否则 clone 下来 ./gradlew 直接不能用
+!gradle/wrapper/gradle-wrapper.jar
+!gradlew
+!gradlew.bat
+
+# ─── 本机配置 ────────────────────────────────────────────────────────────
+# local.properties 里有本机 SDK 绝对路径，每台机器都不同，绝不能入库
+local.properties
+# 签名材料（如有）
+keystore.properties
+signing.properties
+*.keystore
+*.jks
+*.p12
+*.pfx
+
+# ─── IDE ────────────────────────────────────────────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+.cxx/
+.vscode/
+nbproject/
+*.hprof
+
+# ─── 构建产物 ────────────────────────────────────────────────────────────
+*.apk
+*.aab
+*.ap_
+*.aar
+*.dex
+*.class
+*.idsig
+*.so
+!libs/**/*.so
+captures/
+output-metadata.json
+mapping.txt
+seeds.txt
+usage.txt
+configuration.txt
+resources.txt
+baselineProfiles/
+*.dm
+*.prof
+
+# ─── 日志 / 临时文件 ─────────────────────────────────────────────────────
+*.log
+*.bak
+*.orig
+*.rej
+*.swp
+*~
+*.tmp
+
+# ─── 压缩包（历史上传的 src.zip 之类不入库） ──────────────────────────────
+*.zip
+*.7z
+*.rar
+
+# ─── 系统 ────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini

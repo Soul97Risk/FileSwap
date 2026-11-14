@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Shizuku 运行时授权所需。缺少这两条，Shizuku.checkSelfPermission() 永远返回
+         DENIED，授权对话框也不会弹出，读 mtime / 备份 / 替换三个核心功能全部不可用。 -->
+    <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
+    <uses-permission android:name="moe.shizuku.manager.permission.API" />
+
+    <!-- 本地引擎（免 Shizuku/Root）的存储权限：
+         - maxSdkVersion="29"：安卓 10 及以下走 WRITE_EXTERNAL_STORAGE 运行时权限
+           （READ 由 WRITE 自动带入；安卓 4.4 起 applicationInfo 无需 READ 也可装）
+         - MANAGE_EXTERNAL_STORAGE：安卓 11+ 的「所有文件访问」，
+           注意官方排除项——其他应用的 Android/data 与 Android/obb 依然不可达 -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <!-- Android 11+ 包可见性：允许查询 Shizuku 管理器是否已安装。 -->
+    <queries>
+        <package android:name="moe.shizuku.privileged.api" />
+    </queries>
+
+    <application
+        android:allowBackup="false"
+        android:requestLegacyExternalStorage="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.ShizukuFileTool"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Shizuku: 用于 API < 23 场景的旧版 provider，新版 Shizuku(shell) 主要走运行时权限 -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:multiprocess="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+
+    </application>
+</manifest>

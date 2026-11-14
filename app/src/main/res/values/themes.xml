@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  应用级主题。原版 manifest 引用的是 @style/Theme.Material3.DayNight.NoActionBar，
+  该主题由 com.google.android.material:material 提供，而本项目并未依赖该库，
+  导致 AAPT2 链接阶段报 "resource style/Theme.Material3.DayNight.NoActionBar not found"。
+  这里改为基于系统 Material 主题自建，不引入额外依赖。
+  Compose 的 ShizukuFileToolTheme 会在 setContent 后接管配色（含 Android 12+ 动态取色），
+  此处仅负责窗口层背景，避免启动瞬间闪白/闪黑。
+-->
+<resources>
+    <style name="Theme.ShizukuFileTool" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">#FFFBFDF9</item>
+    </style>
+</resources>

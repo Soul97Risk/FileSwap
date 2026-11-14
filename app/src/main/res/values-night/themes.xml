@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 夜间模式窗口层主题，与 Theme.kt 暗色板 surface(0xFF101412) 对齐。 -->
+<resources>
+    <style name="Theme.ShizukuFileTool" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#FF101412</item>
+    </style>
+</resources>
